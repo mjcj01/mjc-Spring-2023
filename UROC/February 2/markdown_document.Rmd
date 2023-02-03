@@ -1,0 +1,147 @@
+---
+title: "UROC 2-2-2023"
+author: "Michael Cattell"
+date: "February 2, 2023"
+output: 
+  html_document: 
+    css: "style.css"
+---
+
+```{r setup, include=FALSE}
+library(showtext)
+library(tidyverse)
+library(ggiraph)
+library(sf)
+library(RColorBrewer)
+library(leaflet)
+library(grid)
+library(gridExtra)
+library(formattable)
+library(stringr)
+library(htmltools)
+library(ggthemes)
+
+font_add_google("Lexend", "Lexend")
+showtext_auto()
+
+shapefile <- st_read("BCPS Shapefile//bcps.shp")
+
+shapefile$schnam <- sub("ES", "Elementary", shapefile$schnam) %>%
+  str_to_title()
+
+pal <- colorNumeric(palette = c("#99e4ff","#013142"), domain = shapefile$TOTSTUD)
+
+shapefile <- shapefile %>%
+  mutate("tooltip_text" = paste0(paste("<b>", "School Name:", "</b>", schnam), "</br>",
+                                paste("<b>", "Lowest Grade:", "</b>", LOWGRADE), "</br>",
+                                paste("<b>", "Highest Grade:", "</b>", HIGRADE), "</br>",
+                                paste("<b>", "Total Students:", "</b>", TOTSTUD), "</br>"))
+
+shapefile$tooltip_text <- shapefile$tooltip_text %>%
+  lapply(htmltools::HTML)
+```
+
+## Map from QGIS
+
+![](C:/Users/micha\Desktop\mjc-Spring-2023\UROC\February 2\bcps_ele_1_27_2023.jpg)
+
+## Map from ggplot2
+
+```{r, echo = FALSE, out.width = "100%"}
+ggplot() + 
+  geom_sf(data = shapefile, aes(fill = TOTSTUD)) +
+  theme_map() +
+  ggtitle(label = "Baltimore County Public Schools",
+          subtitle = "Data from 2020") +
+  theme(
+    plot.title = element_text(family = "Lexend", size = 30),
+    plot.subtitle = element_text(family = "Lexend", size = 25),
+    legend.title = element_text(family = "Lexend", size = 20),
+    legend.text = element_text(family = "Lexend", size = 16),
+    legend.position = "right",
+    panel.background = element_blank()
+  )
+```
+
+## Map from Leaflet
+
+```{r, echo = FALSE, out.width = "100%"}
+leaflet() %>%
+  addPolygons(data = shapefile,
+              fillOpacity = 0.8125,
+              weight = 1,
+              stroke = TRUE,
+              opacity = 1,
+              label = ~tooltip_text,
+              fillColor = ~pal(TOTSTUD),
+              color = "#ffffff",
+              highlightOptions = highlightOptions(
+                weight = 3,
+                color = "#ffffff"
+              )) %>%
+  addLegend("bottomright", pal = pal, values = shapefile$TOTSTUD, title = "Total Students") %>%
+  addTiles()
+```
+
+## Table
+
+```{r, echo = FALSE, out.width = "100%"}
+table <- as.data.frame(shapefile) %>%
+  select(schnam, TOTSTUD, S_WHITE, S_BLACK, S_HISP, S_ASIAN, S_AMIN, S_NHPI, S_2MORE) %>%
+  rename(
+    "Total Students" = TOTSTUD,
+    "White Students" = S_WHITE,
+    "Black Students" = S_BLACK,
+    "Hispanic Students" = S_HISP,
+    "Asian Students" = S_ASIAN,
+    "American Indian Students" = S_AMIN,
+    "Native Hawaiian & Pacific Islander Students" = S_NHPI,
+    "Students with 2 or More Races" = S_2MORE
+  ) %>%
+  data.table::setorder(., cols = - "Total Students")
+
+row.names(table) <- NULL
+
+formattable(table, list(`White Students`= formatter("span", 
+                                                         style = x ~ style(display = "block",
+                                                                           "border-radius" = "4px",
+                                                                           "padding-right" = "4px",
+                                                                           color = "white",
+                                                                           "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff")))),
+                        `Black Students`= formatter("span", 
+                                                    style = x ~ style(display = "block",
+                                                                      "border-radius" = "4px",
+                                                                      "padding-right" = "4px",
+                                                                      color = "white",
+                                                                      "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff")))),
+                        `Hispanic Students`= formatter("span", 
+                                                    style = x ~ style(display = "block",
+                                                                      "border-radius" = "4px",
+                                                                      "padding-right" = "4px",
+                                                                      color = "white",
+                                                                      "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff")))),
+                        `Asian Students`= formatter("span", 
+                                                    style = x ~ style(display = "block",
+                                                                      "border-radius" = "4px",
+                                                                      "padding-right" = "4px",
+                                                                      color = "white",
+                                                                      "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff")))),
+                        `American Indian Students`= formatter("span", 
+                                                    style = x ~ style(display = "block",
+                                                                      "border-radius" = "4px",
+                                                                      "padding-right" = "4px",
+                                                                      color = "white",
+                                                                      "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff")))),
+                        `Native Hawaiian & Pacific Islander Students`= formatter("span", 
+                                                    style = x ~ style(display = "block",
+                                                                      "border-radius" = "4px",
+                                                                      "padding-right" = "4px",
+                                                                      color = "white",
+                                                                      "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff")))),
+                        `Students with 2 or More Races`= formatter("span", 
+                                                    style = x ~ style(display = "block",
+                                                                      "border-radius" = "4px",
+                                                                      "padding-right" = "4px",
+                                                                      color = "white",
+                                                                      "background-color" = csscolor(gradient(as.numeric(x), "#323232", "#99e4ff"))))))
+```
