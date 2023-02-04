@@ -43,10 +43,12 @@ es_2000 <- merge(es_2000_nces, es_2000_shp, by.x = "school_name", by.y = "School
 
 es_2000_missing_nces <- es_2000 %>%
   filter(has_nces_key == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 es_2000_missing_geometry <- es_2000 %>%
   filter(has_geometry == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 
 ### Merging middle school files
 
@@ -62,10 +64,12 @@ ms_2000 <- merge(ms_2000_nces, ms_2000_shp, by.x = "school_name", by.y = "School
 
 ms_2000_missing_nces <- ms_2000 %>%
   filter(has_nces_key == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 ms_2000_missing_geometry <- ms_2000 %>%
   filter(has_geometry == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 
 ### Merging high school files
 
@@ -81,7 +85,24 @@ hs_2000 <- merge(hs_2000_nces, hs_2000_shp, by.x = "school_name", by.y = "School
 
 hs_2000_missing_nces <- hs_2000 %>%
   filter(has_nces_key == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 hs_2000_missing_geometry <- hs_2000 %>%
   filter(has_geometry == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
+
+es_2000 %>%
+  as.data.frame() %>%
+  select(school_name, has_nces_key, has_geometry) %>%
+  write.csv(., "UROC/bcps_nces_codes/checks/es_2000_check.csv", row.names = FALSE)
+
+ms_2000 %>%
+  as.data.frame() %>%
+  select(school_name, has_nces_key, has_geometry) %>%
+  write.csv(., "UROC/bcps_nces_codes/checks/ms_2000_check.csv", row.names = FALSE)
+
+hs_2000 %>%
+  as.data.frame() %>%
+  select(school_name, has_nces_key, has_geometry) %>%
+  write.csv(., "UROC/bcps_nces_codes/checks/hs_2000_check.csv", row.names = FALSE)

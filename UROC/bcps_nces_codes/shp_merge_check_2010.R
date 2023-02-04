@@ -35,10 +35,12 @@ es_2010 <- merge(es_2010_nces, es_2010_shp, by.x = "school_name", by.y = "schnam
 
 es_2010_missing_nces <- es_2010 %>%
   filter(on_nces_key == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 es_2010_missing_geometry <- es_2010 %>%
   filter(has_geometry == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 
 ### Merging middle school files
 
@@ -56,10 +58,12 @@ ms_2010 <- merge(ms_2010_nces, ms_2010_shp, by.x = "school_name", by.y = "schnam
 
 ms_2010_missing_nces <- ms_2010 %>%
   filter(on_nces_key == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 ms_2010_missing_geometry <- ms_2010 %>%
   filter(has_geometry == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 
 ### Merging high school files
 
@@ -81,10 +85,12 @@ hs_2010 <- merge(hs_2010_nces, hs_2010_shp, by.x = "school_name", by.y = "schnam
 
 hs_2010_missing_nces <- hs_2010 %>%
   filter(on_nces_key == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 hs_2010_missing_geometry <- hs_2010 %>%
   filter(has_geometry == FALSE) %>%
-  pull(school_name)
+  pull(school_name) %>%
+  str_to_title()
 
 ### Exporting checks
 
