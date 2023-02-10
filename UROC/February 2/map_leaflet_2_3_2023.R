@@ -4,8 +4,9 @@ library(ggthemes)
 library(formattable)
 
 ggplot() + 
-  geom_sf(data = shapefile, aes(fill = TOTSTUD)) +
+  geom_sf(data = es_2020, aes(fill = TOTSTUD)) +
   theme_map() +
+  scale_fill_fermenter(breaks = c(200, 400, 600, 800)) +
   ggtitle(label = "Baltimore County Public Schools",
           subtitle = "Data from 2020") +
   theme(
@@ -17,7 +18,7 @@ ggplot() +
     panel.background = element_blank()
   )
 
-table <- as.data.frame(shapefile) %>%
+table <- as.data.frame(es_2020) %>%
   select(schnam, TOTSTUD, S_WHITE, S_BLACK, S_HISP, S_ASIAN, S_AMIN, S_NHPI, S_2MORE) %>%
   rename(
     "Total Students" = TOTSTUD,
