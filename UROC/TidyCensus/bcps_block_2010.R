@@ -7,13 +7,13 @@ census_api_key("afca60b1a2ed4a17447e9630ddf64b4fd1394758", install = TRUE)
 
 load_variables(2010, dataset = c("sf1")) %>% View()
 
-vars <- c("P005001", "P005003", "P005004", "P005005", "P005006", "P005007", "P005008",
+vars_2010 <- c("P005001", "P005003", "P005004", "P005005", "P005006", "P005007", "P005008",
           "P005009", "P005010")
 
-baltimore_county_block_data_all <- get_decennial(geography = "block",
+baltimore_county_block_data_all_2010 <- get_decennial(geography = "block",
                                              state = "MD",
                                              county = "Baltimore County",
-                                             variables = vars,
+                                             variables = vars_2010,
                                              year = 2010,
                                              geometry = TRUE) %>% 
   group_by(GEOID, NAME, geometry) %>%
@@ -28,13 +28,13 @@ baltimore_county_block_data_all <- get_decennial(geography = "block",
             "C_TOTAL" = sum(value[variable == "P005001"])) %>%
   as.data.frame()
 
-vars_18 <- c("P011001", "P011002", "P011005", "P011006", "P011007", "P011008", "P011009",
+vars_18_2010 <- c("P011001", "P011002", "P011005", "P011006", "P011007", "P011008", "P011009",
              "P011010", "P011011")
 
-baltimore_county_block_data_18_up <- get_decennial(geography = "block",
+baltimore_county_block_data_18_up_2010 <- get_decennial(geography = "block",
                                                  state = "MD",
                                                  county = "Baltimore County",
-                                                 variables = vars_18,
+                                                 variables = vars_18_2010,
                                                  year = 2010,
                                                  geometry = TRUE) %>% 
   group_by(GEOID, NAME, geometry) %>%
@@ -49,7 +49,7 @@ baltimore_county_block_data_18_up <- get_decennial(geography = "block",
             "V_TOTAL" = sum(value[variable == "P011001"])) %>%
   as.data.frame()
 
-baltimore_county_block_data <- merge(baltimore_county_block_data_18_up, baltimore_county_block_data_all,
+baltimore_county_block_data_2010 <- merge(baltimore_county_block_data_18_up, baltimore_county_block_data_all,
                                      by = c("GEOID", "NAME", "geometry")) %>%
   mutate("Y_WHITE" = C_WHITE - V_WHITE,
          "Y_BLACK" = C_BLACK - V_BLACK,
@@ -62,7 +62,7 @@ baltimore_county_block_data <- merge(baltimore_county_block_data_18_up, baltimor
          "Y_TOTAL" = C_TOTAL - V_TOTAL) %>%
   st_as_sf()
 
-st_write(baltimore_county_block_data, "UROC//TidyCensus//BCPS Block Data 2010//bcps_census_2010.shp", append = FALSE)    
+st_write(baltimore_county_block_data_2010, "UROC//TidyCensus//BCPS Block Data 2010//bcps_census_2010.shp", append = FALSE)    
 
 st_read("UROC//TidyCensus//BCPS Block Data 2010//bcps_census_2010.shp") %>%
   names()
