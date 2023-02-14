@@ -27,7 +27,7 @@ plot_table <- es_2020 %>%
 names(plot_table) <- c("Student Count")
 
 plot_table <- plot_table  %>%
-  mutate("Percentage" = paste(round(`Student Count` / sum(`Student Count`) * 100, digits = 2), "%", sep = "")
+  mutate("Percentage" = paste(round(`Student Count` / sum(`Student Count`) * 100, digits = 2), "%", sep = ""))
 
 ggplot(data = es_2020, aes(fill = TOTSTUD)) +
   geom_sf(linewidth = 0.625) +
