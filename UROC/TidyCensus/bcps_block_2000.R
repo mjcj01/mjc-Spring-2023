@@ -3,7 +3,7 @@ library(tigris)
 library(tidycensus)
 library(sf)
 
-census_api_key("afca60b1a2ed4a17447e9630ddf64b4fd1394758", install = TRUE)
+census_api_key("KEY", install = TRUE)
 
 load_variables(2000, dataset = c("sf1")) %>% View()
 
