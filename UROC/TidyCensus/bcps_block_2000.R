@@ -3,11 +3,6 @@ library(tigris)
 library(tidycensus)
 library(sf)
 
-<<<<<<< HEAD
-=======
-census_api_key("KEY", install = TRUE)
-
->>>>>>> c9c59c52daa986833732ba94a89521b78bec2ef4
 load_variables(2000, dataset = c("sf1")) %>% View()
 
 vars_2000 <- c("P004001", "P004002", "P004005", "P004006", "P004007", "P004008",
